@@ -26,6 +26,6 @@ jobs:
 
       - name: Run the APK upload script
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python download_and_release.py
