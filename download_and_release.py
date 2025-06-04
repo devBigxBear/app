@@ -16,32 +16,55 @@ if apk_response.status_code != 200:
 with open(apk_filename, "wb") as f:
     f.write(apk_response.content)
 
-# Create a GitHub Release
-print("Creating GitHub release...")
+# Prepare GitHub API
 repo = os.environ["GITHUB_REPOSITORY"]
 token = os.environ["GITHUB_TOKEN"]
 headers = {
     "Authorization": f"token {token}",
     "Accept": "application/vnd.github.v3+json"
 }
-release_data = {
-    "tag_name": release_tag,
-    "name": f"Auto Release {release_tag}",
-    "body": "Automated APK upload.",
-    "draft": False,
-    "prerelease": False
-}
-release_response = requests.post(
-    f"https://api.github.com/repos/{repo}/releases",
-    headers=headers,
-    json=release_data
-)
-if release_response.status_code != 201:
-    print("Error creating release:", release_response.text)
-    raise Exception("Failed to create release")
 
-release = release_response.json()
+# Get or create release
+release_check_url = f"https://api.github.com/repos/{repo}/releases/tags/{release_tag}"
+release_response = requests.get(release_check_url, headers=headers)
+if release_response.status_code == 200:
+    print(f"Release with tag {release_tag} found, updating it.")
+    release = release_response.json()
+else:
+    print(f"Release with tag {release_tag} not found, creating new release.")
+    release_data = {
+        "tag_name": release_tag,
+        "name": f"Auto Release {release_tag}",
+        "body": "Automated APK upload.",
+        "draft": False,
+        "prerelease": False
+    }
+    release_create_response = requests.post(
+        f"https://api.github.com/repos/{repo}/releases",
+        headers=headers,
+        json=release_data
+    )
+    if release_create_response.status_code != 201:
+        print("Error creating release:", release_create_response.text)
+        raise Exception("Failed to create release")
+    release = release_create_response.json()
+
 upload_url = release["upload_url"].split("{")[0]
+
+# Delete asset with the same name if exists
+assets_url = release["assets_url"]
+assets_response = requests.get(assets_url, headers=headers)
+if assets_response.status_code == 200:
+    assets = assets_response.json()
+    for asset in assets:
+        if asset["name"] == apk_filename:
+            print(f"Deleting existing asset {apk_filename}...")
+            delete_url = asset["url"]
+            del_response = requests.delete(delete_url, headers=headers)
+            if del_response.status_code != 204:
+                print("Failed to delete existing asset:", del_response.text)
+            else:
+                print("Existing asset deleted.")
 
 # Upload APK to the release
 print("Uploading APK to release...")
