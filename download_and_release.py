@@ -3,8 +3,8 @@ import requests
 from datetime import datetime
 
 # --- Configuration ---
-apk_url = "https://example.com/latest-apk.apk"  # Replace with the real APK URL
-apk_filename = f"MyApp_{datetime.now().strftime('%Y-%m-%d')}.apk"  # Unique filename based on the current date
+apk_url = "https://www.dl.farsroid.com/game/Doodle-Jump-3.11.7-Mod(www.FarsRoid.com).apk"  # Replace with the real APK URL
+apk_filename = f"Doodle-Jump_{datetime.now().strftime('%Y-%m-%d')}.apk"  # Unique filename based on the current date
 release_tag = datetime.now().strftime("auto-%Y-%m-%d")
 
 # Download the APK
