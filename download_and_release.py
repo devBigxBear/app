@@ -4,7 +4,7 @@ from datetime import datetime
 
 # 1️⃣ Configuration
 apk_url = "https://www.dl.farsroid.com/ap/Bluelight-Filter-Unlocked-6.3.4(www.FarsRoid.com).apk"  # 🔁 Replace this with the actual APK URL
-apk_filename = "downloaded_app.apk"
+apk_filename = f"BlueLight-Filter_{datetime.now().strftime('%Y-%m-%d')}.apk"
 release_tag = datetime.now().strftime("auto-%Y-%m-%d")
 
 # 2️⃣ Download the APK
