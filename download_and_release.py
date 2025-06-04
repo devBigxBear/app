@@ -2,12 +2,12 @@ import os
 import requests
 from datetime import datetime
 
-# 1️⃣ Configuration
-apk_url = "https://www.dl.farsroid.com/ap/Bluelight-Filter-Unlocked-6.3.4(www.FarsRoid.com).apk"  # 🔁 Replace this with the actual APK URL
-apk_filename = f"BlueLight-Filter_{datetime.now().strftime('%Y-%m-%d')}.apk"
+# --- Configuration ---
+apk_url = "https://example.com/latest-apk.apk"  # Replace with the real APK URL
+apk_filename = f"MyApp_{datetime.now().strftime('%Y-%m-%d')}.apk"  # Unique filename based on the current date
 release_tag = datetime.now().strftime("auto-%Y-%m-%d")
 
-# 2️⃣ Download the APK
+# Download the APK
 print(f"Downloading APK from {apk_url}")
 apk_response = requests.get(apk_url)
 if apk_response.status_code != 200:
@@ -16,7 +16,7 @@ if apk_response.status_code != 200:
 with open(apk_filename, "wb") as f:
     f.write(apk_response.content)
 
-# 3️⃣ Create a GitHub Release
+# Create a GitHub Release
 print("Creating GitHub release...")
 repo = os.environ["GITHUB_REPOSITORY"]
 token = os.environ["GITHUB_TOKEN"]
@@ -43,7 +43,7 @@ if release_response.status_code != 201:
 release = release_response.json()
 upload_url = release["upload_url"].split("{")[0]
 
-# 4️⃣ Upload APK to the release
+# Upload APK to the release
 print("Uploading APK to release...")
 with open(apk_filename, "rb") as f:
     apk_data = f.read()
