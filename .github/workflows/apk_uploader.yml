@@ -3,29 +3,26 @@ name: Upload APK Every 3 Days
 on:
   schedule:
     - cron: '0 0 */3 * *'  # ⏰ Every 3 days at midnight UTC
-  workflow_dispatch:       # 👈 Allows manual runs from the Actions tab
+  workflow_dispatch:       # 🔘 Allow manual runs from the Actions tab
 
 jobs:
   upload_apk:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
 
     steps:
-      - name: Checkout repo
+      - name: 🧾 Checkout repo
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run the APK upload script
+      - name: 🚀 Run the APK upload script
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          MY_GITHUB_PAT: ${{ secrets.MY_GITHUB_PAT }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python download_and_release.py
